@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestione Progetti</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+<header>
+    <h1>Gestione Progetti</h1>
+    <nav>
+        <ul>
+            <li><a href="#projects">Progetti</a></li>
+            <li><a href="#tasks">Task</a></li>
+            <li><a href="#employees">Dipendenti</a></li>
+        </ul>
+    </nav>
+</header>
+
+<!-- Sezione Progetti -->
+<section id="projects">
+    <h2>Progetti</h2>
+    <button class="btn add-btn" onclick="showProjectForm()">Aggiungi Progetto</button>
+    <table id="project-table">
+        <thead>
+        <tr>
+            <th>Titolo</th>
+            <th>Descrizione</th>
+            <th>Status</th>
+            <th>Data di Fine</th>
+            <th>Azioni</th>
+        </tr>
+        </thead>
+        <tbody id="project-list"></tbody>
+    </table>
+
+    <!-- Modifica/aggiungi progetto -->
+    <div id="project-form" style="display:none;">
+        <h3>Modifica Progetto</h3>
+        <input type="hidden" id="project-id">
+        <input type="text" id="project-name" placeholder="Nome Progetto" required>
+        <input type="text" id="project-description" placeholder="Descrizione" required>
+        <input type="date" id="project-endDate" required>
+        <select id="project-status">
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="COMPLETED">Completed</option>
+        </select>
+        <button class="btn add-btn" onclick="saveProject()">Salva</button>
+    </div>
+</section>
+
+<!-- Sezione Task -->
+<section id="tasks">
+    <h2>Task</h2>
+    <button class="btn add-btn" onclick="showTaskForm()">Aggiungi Task</button>
+    <table id="task-table">
+        <thead>
+        <tr>
+            <th>Titolo</th>
+            <th>Descrizione</th>
+            <th>Status</th>
+            <th>Data di Scadenza</th>
+            <th>Progetto ID</th>
+            <th>Dipendente ID</th>
+            <th>Azioni</th>
+        </tr>
+        </thead>
+        <tbody id="task-list"></tbody>
+    </table>
+
+    <!-- Modifica/aggiungi task -->
+    <div id="task-form" style="display:none;">
+        <h3>Modifica Task</h3>
+        <input type="hidden" id="task-id">
+        <input type="text" id="task-title" placeholder="Titolo Task" required>
+        <input type="text" id="task-description" placeholder="Descrizione" required>
+        <input type="date" id="task-dueDate" required>
+        <select id="task-status">
+            <option value="TO_DO">To Do</option>
+            <option value="IN_PROGRESS">In Progress</option>
+            <option value="COMPLETED">Completed</option>
+        </select>
+        <input type="number" id="task-project" placeholder="Project ID" required>
+        <input type="number" id="task-employee" placeholder="Employee ID" required>
+        <button class="btn add-btn" onclick="saveTask()">Salva</button>
+    </div>
+</section>
+
+<!-- Sezione Dipendenti -->
+<section id="employees">
+    <h2>Dipendenti</h2>
+    <button class="btn add-btn" onclick="showEmployeeForm()">Aggiungi Dipendente</button>
+    <table id="employee-table">
+        <thead>
+        <tr>
+            <th>Nome</th>
+            <th>Ruolo</th>
+            <th>Username</th>
+            <th>Azioni</th>
+        </tr>
+        </thead>
+        <tbody id="employee-list"></tbody>
+    </table>
+
+    <!-- Modifica/aggiungi dipendente -->
+    <div id="employee-form" style="display:none;">
+        <h3>Modifica Dipendente</h3>
+        <input type="hidden" id="employee-id">
+        <input type="text" id="employee-name" placeholder="Nome Dipendente" required>
+        <input type="text" id="employee-position" placeholder="Ruolo" required>
+        <input type="text" id="employee-username" placeholder="Username" required>
+        <button class="btn add-btn" onclick="saveEmployee()">Salva</button>
+    </div>
+</section>
+
+<script src="main.js"></script>
+</body>
+</html>
