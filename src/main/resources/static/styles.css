@@ -67,11 +67,11 @@ nav ul li a:hover {
 
 /* Sezioni */
 section {
-    margin: 40px 10%;
+    margin: 0; /* Elimina margine per togliere distacco dalla pagina */
     padding: 30px;
-    background-color: white;
-    border-radius: 8px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+    background-color: transparent; /* Rende lo sfondo della sezione trasparente */
+    border: none; /* Rimuove il bordo */
+    box-shadow: none; /* Elimina l'ombra */
     transition: all 0.3s ease;
 }
 
