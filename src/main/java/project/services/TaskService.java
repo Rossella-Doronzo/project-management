@@ -11,6 +11,8 @@ public interface TaskService {
 
     List<Task> getAllTasks();
 
+    List<Task> getTasksByEmployeeId(Long employeeId);
+
     Optional<Task> getTaskById(Long id);
 
     Task updateTask(Long id, Task task);

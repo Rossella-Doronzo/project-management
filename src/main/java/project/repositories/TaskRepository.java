@@ -6,6 +6,8 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import project.model.Task;
 
+import java.util.List;
+
 
 public interface TaskRepository extends JpaRepository<Task, Long> {
 
@@ -13,4 +15,5 @@ public interface TaskRepository extends JpaRepository<Task, Long> {
     @Query("DELETE FROM Task t WHERE t.employee.id = :employeeId")
 
     void deleteByEmployeeId(@Param("employeeId") Long employeeId);
+    List<Task> findByEmployeeId(Long employeeId);
 }

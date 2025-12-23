@@ -5,6 +5,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import project.enums.RoleEmployeeEnum;
+import project.enums.RoleEnum;
 import project.model.Employee;
 import project.repositories.EmployeeRepository;
 import project.repositories.TaskRepository;
@@ -31,6 +33,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 
             if (employee.getUsername() == null || employee.getUsername().isEmpty()) {
                 throw new IllegalArgumentException("Username cannot be null or empty");
+            }
+            if (employee.getRole() == null) {
+                employee.setRole(RoleEnum.EMPLOYEE);
+            }
+            if (employee.getRoleEmployee() == null) {
+                employee.setRoleEmployee(RoleEmployeeEnum.JUNIOR_DEVELOPER);
             }
             Employee newEmployee = employeeRepository.save(employee);
             LOGGER.info("Employee created successfully with ID: {}", newEmployee.getId());
@@ -81,12 +89,12 @@ public class EmployeeServiceImpl implements EmployeeService {
             if (updateData.getName() != null) {
                 existing.setName(updateData.getName());
             }
-            if (updateData.getPosition() != null) {
-                existing.setPosition(updateData.getPosition());
-            }
+
             if (updateData.getUsername() != null) {
                 existing.setUsername(updateData.getUsername());
             }
+
+            if (updateData.getRoleEmployee() != null) existing.setRoleEmployee(updateData.getRoleEmployee());
 
             Employee updatedEmployee = employeeRepository.save(existing);
             LOGGER.info("Employee updated successfully with ID: {}", updatedEmployee.getId());
@@ -103,6 +111,11 @@ public class EmployeeServiceImpl implements EmployeeService {
     public boolean deleteEmployee(Long id) {
         try {
             LOGGER.info("Attempting to delete employee with ID: {}", id);
+
+            Optional<Employee> employee = employeeRepository.findById(id);
+            if (employee.isPresent() && employee.get().getRole() == RoleEnum.PM) {
+                throw new IllegalArgumentException("Cannot delete a PM");
+            }
 
             taskRepository.deleteByEmployeeId(id);
 

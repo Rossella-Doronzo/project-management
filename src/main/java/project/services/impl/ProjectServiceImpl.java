@@ -62,6 +62,15 @@ public class ProjectServiceImpl implements ProjectService {
             throw new RuntimeException("Error occurred while retrieving project by ID", e);
         }
     }
+    @Override
+    public List<Project> getProjectsForEmployee(Long employeeId) {
+        try {
+            return projectRepository.findProjectsByEmployeeId(employeeId);
+        } catch (Exception e) {
+            LOGGER.error("Error fetching projects for employee {}: {}", employeeId, e.getMessage(), e);
+            throw new RuntimeException("Error fetching projects for employee", e);
+        }
+    }
 
     @Override
     @Transactional

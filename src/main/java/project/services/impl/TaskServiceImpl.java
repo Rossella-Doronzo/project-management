@@ -51,6 +51,11 @@ public class TaskServiceImpl implements TaskService {
     }
 
     @Override
+    public List<Task> getTasksByEmployeeId(Long employeeId) {
+        return taskRepository.findByEmployeeId(employeeId);
+    }
+
+    @Override
     public Optional<Task> getTaskById(Long id) {
         try {
             LOGGER.info("Retrieving task with ID: {}", id);

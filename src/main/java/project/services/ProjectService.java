@@ -13,6 +13,8 @@ public interface ProjectService {
 
     Optional<Project> getProjectById(Long id);
 
+    List<Project> getProjectsForEmployee(Long employeeId);
+
     Project updateProject(Long id, Project project);
 
     boolean deleteProject(Long id);

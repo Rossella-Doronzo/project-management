@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import project.model.Project;
 import project.services.ProjectService;
@@ -22,6 +23,7 @@ public class ProjectController {
     private ProjectService projectService;
 
     // Creazione di un nuovo progetto
+    @PreAuthorize("hasRole('PM')")
     @PostMapping ("/createProject")
     public ResponseEntity<Project> createProject(@RequestBody Project project) {
         try {
@@ -36,6 +38,7 @@ public class ProjectController {
     }
 
     // Recupero di tutti i progetti
+    @PreAuthorize("hasRole('PM')")
     @GetMapping("/getAllProjects")
     public ResponseEntity<List<Project>> getAllProjects() {
         try {
@@ -50,6 +53,8 @@ public class ProjectController {
     }
 
     // Recupero di un progetto per ID
+    // Solo PM o Employee che è assegnato a un progetto può vederlo
+    @PreAuthorize("hasRole('PM')")
     @GetMapping("/getProjectById")
     public ResponseEntity<Project> getProjectById(@RequestParam Long id) {
         try {
@@ -68,7 +73,21 @@ public class ProjectController {
         }
     }
 
+    @PreAuthorize("hasRole('PM') or hasRole('EMPLOYEE')")
+    @GetMapping("/getProjectsForEmployee")
+    public ResponseEntity<List<Project>> getProjectsForEmployee(@RequestParam Long employeeId) {
+        try {
+            List<Project> projects = projectService.getProjectsForEmployee(employeeId);
+            return new ResponseEntity<>(projects, HttpStatus.OK);
+        } catch (Exception e) {
+            LOGGER.error("Error fetching projects for employee {}: {}", employeeId, e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+
     // Aggiornamento di un progetto (ID passato nel body)
+    @PreAuthorize("hasRole('PM')")
     @PutMapping("/updateProject")
     public ResponseEntity<Project> updateProject(@RequestBody Project project) {
         try {
@@ -93,6 +112,7 @@ public class ProjectController {
     }
 
     // Eliminazione di un progetto (ID passato nel body)
+    @PreAuthorize("hasRole('PM')")
     @DeleteMapping("/deleteProject")
     public ResponseEntity<String> deleteProject(@RequestParam("id") Long id) {
         try {

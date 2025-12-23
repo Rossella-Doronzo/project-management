@@ -8,6 +8,7 @@ import com.nimbusds.jose.crypto.MACVerifier;
 import com.nimbusds.jwt.JWTClaimsSet;
 import com.nimbusds.jwt.SignedJWT;
 import org.springframework.stereotype.Service;
+import project.model.Employee;
 
 import java.text.ParseException;
 import java.util.Date;
@@ -15,47 +16,52 @@ import java.util.Date;
 @Service
 public class JwtTokenProvider {
 
-    // La chiave segreta per firmare i token
     private final String SECRET_KEY = "yIu4hK#89j12Nn4!g@#3UtdTk24Jp8Yxz";
 
-    // Metodo per generare il token
-    public String generateToken(String username) {
-        // Imposta la data di scadenza del token (ad esempio, 1 giorno)
+    // Genera il token, passa anche il ruolo come parametro
+    public String generateToken(Employee employee) {
         Date expirationDate = new Date(System.currentTimeMillis() + 86400000); // 1 giorno
 
         try {
-            // Crea i claim del token (dati come nome utente e data di scadenza)
             JWTClaimsSet claimsSet = new JWTClaimsSet.Builder()
-                    .subject(username)  // Imposta il nome utente come soggetto del token
-                    .issueTime(new Date())  // Imposta la data di emissione
-                    .expirationTime(expirationDate)  // Imposta la data di scadenza
+                    .subject(employee.getUsername())
+                    .claim("role", employee.getRole().name())
+                    .claim("id", employee.getId())
+                    .issueTime(new Date())
+                    .expirationTime(expirationDate)
                     .build();
 
-            // Crea un JWT firmato usando la chiave segreta
             SignedJWT signedJWT = new SignedJWT(
-                    new JWSHeader(JWSAlgorithm.HS256),  // Utilizza HS256 come algoritmo di firma
+                    new JWSHeader(JWSAlgorithm.HS256),
                     claimsSet
             );
 
-            // Firma il JWT con la chiave segreta
             signedJWT.sign(new MACSigner(SECRET_KEY));
 
-            return signedJWT.serialize();  // Restituisci il token firmato come stringa
-
+            return signedJWT.serialize();
         } catch (JOSEException e) {
             e.printStackTrace();
             return null;
         }
     }
 
+
     // Estrai il nome utente dal token
     public String getUsernameFromToken(String token) {
         try {
-            // Decodifica il token firmato
             SignedJWT signedJWT = SignedJWT.parse(token);
-            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
+            return signedJWT.getJWTClaimsSet().getSubject();
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return null;
+        }
+    }
 
-            return claimsSet.getSubject();  // Restituisci il nome utente (subject)
+    // Estrai il ruolo dal token
+    public String getRoleFromToken(String token) {
+        try {
+            SignedJWT signedJWT = SignedJWT.parse(token);
+            return (String) signedJWT.getJWTClaimsSet().getClaim("role");
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
@@ -65,40 +71,27 @@ public class JwtTokenProvider {
     // Verifica se il token è valido
     public boolean validateToken(String token) {
         try {
-            // Decodifica il token firmato
             SignedJWT signedJWT = SignedJWT.parse(token);
-
-            // Verifica la firma del token usando MACVerifier
             if (!signedJWT.verify(new MACVerifier(SECRET_KEY))) {
-                return false;  // La firma non è valida
+                return false;
             }
-
-            // Verifica la data di scadenza
             JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-            Date expirationDate = claimsSet.getExpirationTime();
-            if (expirationDate.before(new Date())) {
-                return false;  // Il token è scaduto
-            }
-
-            return true;  // Il token è valido
-
-        } catch (ParseException | JOSEException e) {
+            return !claimsSet.getExpirationTime().before(new Date());
+        } catch (Exception e) {
             e.printStackTrace();
-            return false;  // Token non valido
+            return false;
         }
     }
 
-    // Metodo per ottenere la data di scadenza del token
+    // Restituisce la data di scadenza
     public Date getExpirationDateFromToken(String token) {
         try {
-            // Decodifica il token firmato
             SignedJWT signedJWT = SignedJWT.parse(token);
-            JWTClaimsSet claimsSet = signedJWT.getJWTClaimsSet();
-
-            return claimsSet.getExpirationTime();  // Restituisce la data di scadenza del token
+            return signedJWT.getJWTClaimsSet().getExpirationTime();
         } catch (ParseException e) {
             e.printStackTrace();
             return null;
         }
     }
 }
+

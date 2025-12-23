@@ -1,16 +1,16 @@
-/* Impostazioni generali */
+/* ================== IMPOSTAZIONI GENERALI ================== */
 body {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f9f9f9; /* Sfondo grigio chiaro per contrasto */
-    color: #333; /* Testo scuro per una lettura chiara */
+    background-color: #f9f9f9;
+    color: #333;
     line-height: 1.6;
 }
 
-/* Header */
+/* ================== HEADER ================== */
 header {
-    background-color: #9c4dcc; /* Viola vivace e brillante */
+    background-color: #9c4dcc;
     color: white;
     padding: 20px 0;
     text-align: center;
@@ -23,11 +23,12 @@ header h1 {
     margin: 0;
 }
 
-/* Navigazione */
+/* ================== NAVIGAZIONE ================== */
 nav ul {
     list-style: none;
     padding: 0;
     margin-top: 20px;
+    text-align: center;
 }
 
 nav ul li {
@@ -44,57 +45,58 @@ nav ul li a {
 }
 
 nav ul li a:hover {
-    color: #f1e3ff; /* Viola chiaro al passaggio del mouse */
+    color: #f1e3ff;
 }
 
-/* Pulsanti */
+/* ================== PULSANTI ================== */
 .btn {
-    background-color: #9c4dcc; /* Viola vivace per i pulsanti */
+    background-color: #9c4dcc;
     color: white;
     padding: 12px 25px;
     border: none;
     border-radius: 5px;
     cursor: pointer;
     font-size: 1rem;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    transition: all 0.4s ease;
+    margin-top: 5px;
 }
 
 .btn:hover {
-    background-color: #7a33b1; /* Viola più scuro al hover */
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+    background-color: #7a33b1;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
 }
 
-/* Sezioni */
+/* ================== SEZIONI ================== */
 section {
-    margin: 0; /* Elimina margine per togliere distacco dalla pagina */
+    margin: 0;
     padding: 30px;
-    background-color: transparent; /* Rende lo sfondo della sezione trasparente */
-    border: none; /* Rimuove il bordo */
-    box-shadow: none; /* Elimina l'ombra */
+    background-color: transparent;
+    border: none;
+    box-shadow: none;
     transition: all 0.3s ease;
 }
 
 section:hover {
-    transform: translateY(-5px);
+    transform: translateY(-3px);
 }
 
 section h2 {
     font-size: 1.8rem;
     margin-bottom: 20px;
-    color: #9c4dcc; /* Viola vivace per i titoli delle sezioni */
+    color: #9c4dcc;
     font-weight: 600;
     text-transform: uppercase;
 }
 
-/* Tabelle */
+/* ================== TABELLE ================== */
 table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
     border-radius: 8px;
     overflow: hidden;
-    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
 }
 
 table th, table td {
@@ -105,26 +107,21 @@ table th, table td {
 }
 
 table th {
-    background-color: #9c4dcc; /* Viola vivace per le intestazioni */
+    background-color: #9c4dcc;
     color: white;
     text-transform: uppercase;
 }
 
 table tr:nth-child(even) {
-    background-color: #f4f4f4; /* Grigio chiaro per le righe pari */
+    background-color: #f4f4f4;
 }
 
 table tr:hover {
-    background-color: #f1e3ff; /* Sfumatura di lilla al passaggio del mouse */
+    background-color: #f1e3ff;
 }
 
-table tr td {
-    color: #333; /* Testo scuro per leggibilità */
-}
-
-/* Pulsanti Modifica ed Elimina affiancati */
 table td button {
-    margin-right: 10px; /* Distanza tra i pulsanti */
+    margin-right: 10px;
     padding: 8px 15px;
     font-size: 0.9rem;
     cursor: pointer;
@@ -136,10 +133,10 @@ table td button {
 }
 
 table td button:hover {
-    background-color: #7a33b1; /* Viola più scuro al passaggio del mouse */
+    background-color: #7a33b1;
 }
 
-/* Form */
+/* ================== FORM ================== */
 input[type="text"], input[type="date"], input[type="number"], select {
     width: 100%;
     padding: 12px;
@@ -152,19 +149,53 @@ input[type="text"], input[type="date"], input[type="number"], select {
 }
 
 input[type="text"]:focus, input[type="date"]:focus, input[type="number"]:focus, select:focus {
-    border-color: #9c4dcc; /* Focus con il viola vivace */
+    border-color: #9c4dcc;
     outline: none;
 }
 
-/* Modifica Form */
 h3 {
-    color: #9c4dcc; /* Viola vivace per i titoli di sezione */
+    color: #9c4dcc;
     margin-bottom: 10px;
     font-size: 1.4rem;
     font-weight: 600;
 }
 
-/* Responsive Design */
+/* ================== BOX FORM ================== */
+#project-form, #task-form, #employee-form, #register-section {
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    margin-top: 20px;
+}
+
+/* ================== PULSANTI ANNULLA ================== */
+#project-form .btn:last-child,
+#task-form .btn:last-child,
+#employee-form .btn:last-child,
+#register-section .btn:last-child {
+    background-color: #ccc;
+    color: #333;
+}
+
+#project-form .btn:last-child:hover,
+#task-form .btn:last-child:hover,
+#employee-form .btn:last-child:hover,
+#register-section .btn:last-child:hover {
+    background-color: #999;
+}
+
+/* ================== ALERT / NOTIFICHE ================== */
+.alert {
+    padding: 12px 20px;
+    margin-bottom: 15px;
+    border-radius: 5px;
+    background-color: #f9c0c0;
+    color: #900;
+    font-weight: 600;
+}
+
+/* ================== RESPONSIVE ================== */
 @media (max-width: 768px) {
     table {
         font-size: 0.9rem;
@@ -191,4 +222,13 @@ h3 {
     input[type="text"], input[type="date"], input[type="number"], select {
         padding: 10px;
     }
+}
+
+/* ================== CLASSI RUOLI ================== */
+.pm-only {
+    display: inline-block; /* visibile di default per PM */
+}
+
+.employee-role-select {
+    display: none; /* visibile solo se ruolo è EMPLOYEE, gestito via JS */
 }

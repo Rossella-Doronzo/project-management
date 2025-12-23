@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import project.model.Task;
 import project.services.TaskService;
@@ -22,6 +23,7 @@ public class TaskController {
     private TaskService taskService;
 
     // Creazione di un nuovo task
+    @PreAuthorize("hasRole('PM')")
     @PostMapping("/createTask")
     public ResponseEntity<Task> createTask(@RequestBody Task task) {
         try {
@@ -36,6 +38,7 @@ public class TaskController {
     }
 
     // Recupero di tutti i task
+    @PreAuthorize("hasRole('PM')")
     @GetMapping("/getAllTasks")
     public ResponseEntity<List<Task>> getAllTasks() {
         try {
@@ -48,8 +51,20 @@ public class TaskController {
             return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-
+    @PreAuthorize("hasRole('EMPLOYEE')")
+    @GetMapping("/getTasksByEmployee")
+    public ResponseEntity<List<Task>> getTasksByEmployee(@RequestParam Long employeeId) {
+        try {
+            LOGGER.info("Retrieving tasks for employee ID: {}", employeeId);
+            List<Task> tasks = taskService.getTasksByEmployeeId(employeeId);
+            return new ResponseEntity<>(tasks, HttpStatus.OK);
+        } catch (Exception e) {
+            LOGGER.error("Error retrieving tasks for employee {}: {}", employeeId, e.getMessage());
+            return new ResponseEntity<>(null, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
     // Recupero di un task per ID (passato nel body)
+    @PreAuthorize("hasRole('PM')")
     @GetMapping("/getTaskById")
     public ResponseEntity<Task> getTaskById(@RequestParam Long id) {
         try {
@@ -69,6 +84,7 @@ public class TaskController {
     }
 
     // Aggiornamento di un task (passando l'ID nel body)
+    @PreAuthorize("hasRole('PM') or (hasRole('EMPLOYEE') and #task.employee.id == authentication.principal.id)")
     @PutMapping("/updateTask")
     public ResponseEntity<Task> updateTask(@RequestBody Task task) {
         try {
@@ -93,6 +109,7 @@ public class TaskController {
     }
 
     // Eliminazione di un task (passando l'ID nel body)
+    @PreAuthorize("hasRole('PM')")
     @DeleteMapping("/deleteTask")
     public ResponseEntity<String> deleteTask(@RequestParam("id") Long id) {
         try {

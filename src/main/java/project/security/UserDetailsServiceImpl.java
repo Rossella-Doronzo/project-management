@@ -30,7 +30,7 @@ public class UserDetailsServiceImpl implements org.springframework.security.core
         return new User(
                 employee.getUsername(),
                 employee.getPassword(),
-                Collections.singletonList(new SimpleGrantedAuthority("ROLE_USER"))  // Aggiungi il ruolo
+                Collections.singletonList(new SimpleGrantedAuthority("ROLE_" + employee.getRole().name()))
         );
     }
 }

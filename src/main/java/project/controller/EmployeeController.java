@@ -5,6 +5,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 import project.model.Employee;
 import project.services.EmployeeService;
@@ -21,6 +22,7 @@ public class EmployeeController {
     @Autowired
     private EmployeeService employeeService;
 
+    @PreAuthorize("hasRole('PM')")
     @PostMapping("/createEmployee")
     public ResponseEntity<Employee> createEmployee(@RequestBody Employee employee) {
         try {
@@ -34,6 +36,7 @@ public class EmployeeController {
         }
     }
 
+    @PreAuthorize("hasRole('PM')")
     @GetMapping("/getAllEmployees")
     public ResponseEntity<List<Employee>> getAllEmployees() {
         try {
@@ -47,6 +50,8 @@ public class EmployeeController {
         }
     }
 
+    // Un dipendente può vedere i suoi dettagli, ma PM può vedere tutti i dipendenti
+    @PreAuthorize("hasRole('PM') or (hasRole('EMPLOYEE') and #id == authentication.principal.id)")
     @GetMapping("/getEmployeeById")
     public ResponseEntity<Employee> getEmployeeById(@RequestParam Long id) {
         try {
@@ -65,6 +70,8 @@ public class EmployeeController {
         }
     }
 
+    // Solo il dipendente stesso o PM possono aggiornare un dipendente
+    @PreAuthorize("hasRole('PM') or (hasRole('EMPLOYEE') and #employee.id == authentication.principal.id)")
     @PutMapping("/updateEmployee")
     public ResponseEntity<Employee> updateEmployee(@RequestBody Employee employee) {
         try {
@@ -88,6 +95,7 @@ public class EmployeeController {
         }
     }
 
+    @PreAuthorize("hasRole('PM')")
     @DeleteMapping("/deleteEmployee")
     public ResponseEntity<String> deleteEmployee(@RequestParam("id") Long id) {
         try {

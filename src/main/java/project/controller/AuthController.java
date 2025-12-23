@@ -23,9 +23,6 @@ public class AuthController {
     private static final Logger LOGGER = LoggerFactory.getLogger(AuthController.class);
 
     @Autowired
-    private AuthenticationManager authenticationManager;
-
-    @Autowired
     private EmployeeService employeeService;
 
     @Autowired
@@ -60,20 +57,17 @@ public class AuthController {
                 return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
             }
 
-            // Se la password è corretta, genera il token JWT
-            String token = jwtTokenProvider.generateToken(username);
+            // Genera il token JWT passando l'oggetto Employee
+            String token = jwtTokenProvider.generateToken(employee);
             LOGGER.info("Login successful for username: {}", username);
 
             // Crea una mappa con il token
             Map<String, String> response = new HashMap<>();
             response.put("token", token);
 
-            // Restituisci il token come parte di un oggetto JSON
-            return ResponseEntity.ok(response); // Qui restituiamo una mappa con il token
-
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
             LOGGER.error("Error occurred during login for username: {}", username, e);
-
             Map<String, String> errorResponse = new HashMap<>();
             errorResponse.put("message", "Invalid credentials");
             return new ResponseEntity<>(errorResponse, HttpStatus.UNAUTHORIZED);
@@ -86,7 +80,13 @@ public class AuthController {
         try {
             LOGGER.info("Attempting to register new employee: {}", employee.getUsername());
 
-            // Cripta la password prima di salvarla
+            // Verifica che username non esista già
+            if(employeeRepository.findByUsername(employee.getUsername()) != null){
+                return ResponseEntity.status(HttpStatus.CONFLICT)
+                        .body("Username already exists");
+            }
+
+            // Cripta la password
             String encryptedPassword = passwordEncoder.encode(employee.getPassword());
             employee.setPassword(encryptedPassword);
 
@@ -94,10 +94,10 @@ public class AuthController {
             Employee savedEmployee = employeeService.createEmployee(employee);
             LOGGER.info("Employee registered successfully with username: {}", employee.getUsername());
 
-            // Risposta con stato HTTP 201 (CREATED)
-            return ResponseEntity.status(HttpStatus.CREATED).body("Employee registered successfully");
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body("Employee registered successfully");
         } catch (Exception e) {
-            LOGGER.error("Error occurred during registration of employee: {}", employee.getUsername(), e);
+            LOGGER.error("Error during registration of employee: {}", employee.getUsername(), e);
             return new ResponseEntity<>("Error during registration", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

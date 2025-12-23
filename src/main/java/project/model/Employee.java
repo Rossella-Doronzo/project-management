@@ -1,6 +1,8 @@
 package project.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import project.enums.RoleEmployeeEnum;
+import project.enums.RoleEnum;
 
 import javax.persistence.*;
 
@@ -12,9 +14,14 @@ public class Employee {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String name;
-    private String position;
     private String username;
     private String password;
+
+    @Enumerated(EnumType.STRING)
+    private RoleEnum role;
+
+    @Enumerated(EnumType.STRING)
+    private RoleEmployeeEnum roleEmployee;
 
     public Employee() {
     }
@@ -57,11 +64,19 @@ public class Employee {
         this.name = name;
     }
 
-    public String getPosition() {
-        return position;
+    public RoleEnum getRole() {
+        return role;
     }
 
-    public void setPosition(String position) {
-        this.position = position;
+    public void setRole(RoleEnum role) {
+        this.role = role;
+    }
+
+    public RoleEmployeeEnum getRoleEmployee() {
+        return roleEmployee;
+    }
+
+    public void setRoleEmployee(RoleEmployeeEnum roleEmployee) {
+        this.roleEmployee = roleEmployee;
     }
 }
