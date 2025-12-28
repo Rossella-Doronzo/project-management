@@ -275,28 +275,32 @@ function hideTaskForm() { document.getElementById("task-form").style.display = "
 function fetchEmployees() {
     if (!isPM()) return;
 
+    const pmId = localStorage.getItem("auth-id"); // filtro PM loggato
+
     authFetch(`${API_URL}/getAllEmployees`)
         .then(res => res.json())
         .then(employees => {
             const table = document.getElementById("employee-list");
             table.innerHTML = "";
 
-            employees.forEach(e => {
-                // Mostro ruolo tecnico o PM
-                let technicalRole = e.role === "PM" ? "PM" : (e.roleEmployee || "–");
+            employees
+                .filter(e => e.id != pmId) // escludo PM loggato
+                .forEach(e => {
+                    let technicalRole = e.role === "PM" ? "PM" : (e.roleEmployee || "–");
 
-                table.innerHTML += `
-                <tr>
-                    <td>${e.name || "–"}</td>
-                    <td>${e.role || "–"}</td>
-                    <td>${technicalRole}</td>
-                    <td>${e.username || "–"}</td>
-                    <td>
-                        <button onclick="editEmployee(${e.id})">Modifica</button>
-                        <button onclick="deleteEmployee(${e.id})">Elimina</button>
-                    </td>
-                </tr>`;
-            });
+                    table.innerHTML += `
+                    <tr>
+                        <td>${e.id || "–"}</td> <!-- ID dipendente -->
+                        <td>${e.name || "–"}</td>
+                        <td>${e.role || "–"}</td>
+                        <td>${technicalRole}</td>
+                        <td>${e.username || "–"}</td>
+                        <td>
+                            <button onclick="editEmployee(${e.id})">Modifica</button>
+                            <button onclick="deleteEmployee(${e.id})">Elimina</button>
+                        </td>
+                    </tr>`;
+                });
         })
         .catch(err => console.error("Errore nel fetch dipendenti:", err));
 }
@@ -337,6 +341,21 @@ function editEmployee(id) {
 function deleteEmployee(id) {
     authFetch(`${API_URL}/deleteEmployee?id=${id}`, { method: "DELETE" })
         .then(fetchEmployees);
+}
+
+// ====================== PM UPDATE ======================
+function updatePMName(name, username) {
+    const id = localStorage.getItem("auth-id");
+    const payload = { id, name, username };
+
+    authFetch(`${API_URL}/updateEmployee`, {
+        method: "PUT",
+        body: JSON.stringify(payload)
+    })
+    .then(() => {
+        localStorage.setItem("auth-username", username);
+        alert("Dati aggiornati!");
+    });
 }
 
 // ====================== INIT ======================
