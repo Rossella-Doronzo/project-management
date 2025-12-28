@@ -94,6 +94,8 @@ public class EmployeeServiceImpl implements EmployeeService {
                 existing.setUsername(updateData.getUsername());
             }
 
+            if (updateData.getRole() != null) existing.setRole(updateData.getRole());
+
             if (updateData.getRoleEmployee() != null) existing.setRoleEmployee(updateData.getRoleEmployee());
 
             Employee updatedEmployee = employeeRepository.save(existing);

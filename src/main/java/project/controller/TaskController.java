@@ -84,7 +84,7 @@ public class TaskController {
     }
 
     // Aggiornamento di un task (passando l'ID nel body)
-    @PreAuthorize("hasRole('PM') or (hasRole('EMPLOYEE') and #task.employee.id == authentication.principal.id)")
+    @PreAuthorize("hasRole('PM') or hasRole('EMPLOYEE')")
     @PutMapping("/updateTask")
     public ResponseEntity<Task> updateTask(@RequestBody Task task) {
         try {

@@ -23,7 +23,7 @@ public class Task {
     private Project project;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
+    @JoinColumn(name = "employee_id")
     private Employee employee;
 
     @Enumerated(EnumType.STRING)
