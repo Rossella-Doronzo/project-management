@@ -16,7 +16,7 @@
         <input type="password" id="login-password" placeholder="Password" required>
         <button class="btn" type="button" onclick="loginUser()">Login</button>
     </form>
-    <p>Non hai un account? <a href="javascript:void(0);" onclick="toggleForms()">Registrati qui</a></p>
+    <p>Non hai un account? <a href="#" onclick="toggleForms()">Registrati qui</a></p>
 </section>
 
 <!-- ================= REGISTRAZIONE ================= -->
@@ -27,24 +27,28 @@
         <input type="text" id="register-username" placeholder="Username" required>
         <input type="password" id="register-password" placeholder="Password" required>
         <input type="password" id="register-confirm-password" placeholder="Conferma Password" required>
+
         <select id="register-role" onchange="toggleEmployeeRoleSelect()">
             <option value="EMPLOYEE">Employee</option>
             <option value="PM">Project Manager</option>
         </select>
-        <select id="register-employeeRole" style="display:none;">
+
+        <select id="register-employeeRole" class="employee-role-select">
             <option value="JUNIOR_DEVELOPER">Junior Developer</option>
             <option value="SENIOR_DEVELOPER">Senior Developer</option>
             <option value="JUNIOR_ANALYST">Junior Analyst</option>
             <option value="SENIOR_ANALYST">Senior Analyst</option>
             <option value="TECH_LEAD">Tech Lead</option>
         </select>
+
         <button class="btn" type="button" onclick="registerUser()">Registrati</button>
     </form>
-    <p>Hai già un account? <a href="javascript:void(0);" onclick="toggleForms()">Accedi qui</a></p>
+    <p>Hai già un account? <a href="#" onclick="toggleForms()">Accedi qui</a></p>
 </section>
 
 <!-- ================= DASHBOARD ================= -->
 <section id="dashboard" style="display:none;">
+
     <header>
         <h1>Gestione Progetti</h1>
         <nav>
@@ -52,7 +56,7 @@
                 <li><a href="#projects">Progetti</a></li>
                 <li><a href="#tasks">Task</a></li>
                 <li id="nav-employees"><a href="#employees">Dipendenti</a></li>
-                <li><a href="javascript:void(0);" onclick="logoutUser()">Logout</a></li>
+                <li><a href="#" onclick="logoutUser()">Logout</a></li>
             </ul>
         </nav>
     </header>
@@ -60,10 +64,11 @@
     <!-- ================= PROGETTI ================= -->
     <section id="projects">
         <h2>Progetti</h2>
-        <button class="btn pm-only" id="add-project-btn" onclick="showProjectForm()">Aggiungi Progetto</button>
+
         <table>
             <thead>
             <tr>
+                <th>ID</th>
                 <th>Titolo</th>
                 <th>Descrizione</th>
                 <th>Status</th>
@@ -74,12 +79,16 @@
             <tbody id="project-list"></tbody>
         </table>
 
-        <div id="project-form" style="display:none; margin-top:20px;">
+        <div class="table-footer">
+            <button class="btn pm-only" onclick="showProjectForm()">Aggiungi Progetto</button>
+        </div>
+
+        <div id="project-form" style="display:none;">
             <h3>Modifica/Aggiungi Progetto</h3>
             <input type="hidden" id="project-id">
-            <input type="text" id="project-name" placeholder="Nome Progetto" required>
-            <input type="text" id="project-description" placeholder="Descrizione" required>
-            <input type="date" id="project-endDate" required>
+            <input type="text" id="project-name" placeholder="Nome Progetto">
+            <input type="text" id="project-description" placeholder="Descrizione">
+            <input type="date" id="project-endDate">
             <select id="project-status">
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="COMPLETED">Completed</option>
@@ -92,7 +101,7 @@
     <!-- ================= TASK ================= -->
     <section id="tasks">
         <h2>Task</h2>
-        <button class="btn pm-only" id="add-task-btn" onclick="showTaskForm()">Aggiungi Task</button>
+
         <table>
             <thead>
             <tr>
@@ -108,20 +117,26 @@
             <tbody id="task-list"></tbody>
         </table>
 
-        <div id="task-form" style="display:none; margin-top:20px;">
+        <!-- Bottone Salva tutto per employee -->
+        <div id="task-save-container" style="text-align: right; margin-top: 10px;"></div>
+
+        <div class="table-footer">
+            <button class="btn pm-only" onclick="showTaskForm()">Aggiungi Task</button>
+        </div>
+
+        <div id="task-form" style="display:none;">
             <h3>Modifica/Aggiungi Task</h3>
             <input type="hidden" id="task-id">
-            <input type="text" id="task-title" placeholder="Titolo Task" required>
-            <input type="text" id="task-description" placeholder="Descrizione" required>
-            <input type="date" id="task-dueDate" required>
+            <input type="text" id="task-title" placeholder="Titolo Task">
+            <input type="text" id="task-description" placeholder="Descrizione">
+            <input type="date" id="task-dueDate">
             <select id="task-status">
                 <option value="TO_DO">To Do</option>
                 <option value="IN_PROGRESS">In Progress</option>
                 <option value="COMPLETED">Completed</option>
             </select>
-            <!-- Dropdown dinamici caricati da JS -->
-            <select id="task-project" required></select>
-            <select id="task-employee" required></select>
+            <select id="task-project"></select>
+            <select id="task-employee"></select>
 
             <button class="btn" onclick="saveTask()">Salva</button>
             <button class="btn" onclick="hideTaskForm()">Annulla</button>
@@ -131,66 +146,49 @@
     <!-- ================= DIPENDENTI ================= -->
     <section id="employees">
         <h2>Dipendenti</h2>
-        <button class="btn pm-only" id="add-employee-btn" onclick="showEmployeeForm()">Aggiungi Dipendente</button>
+
         <table>
             <thead>
             <tr>
                 <th>ID</th>
                 <th>Nome</th>
+                <th>Username</th>
                 <th>Ruolo</th>
                 <th>Ruolo Tecnico</th>
-                <th>Username</th>
                 <th id="employee-actions-header">Azioni</th>
             </tr>
             </thead>
             <tbody id="employee-list"></tbody>
         </table>
 
-        <div id="employee-form" style="display:none; margin-top:20px;">
+        <div class="table-footer">
+            <button class="btn pm-only" onclick="showEmployeeForm()">Aggiungi Dipendente</button>
+        </div>
+
+        <div id="employee-form" style="display:none;">
             <h3>Modifica/Aggiungi Dipendente</h3>
             <input type="hidden" id="employee-id">
-            <input type="text" id="employee-name" placeholder="Nome Dipendente" required>
+            <input type="text" id="employee-name" placeholder="Nome">
             <select id="employee-role" onchange="toggleEmployeeFormRoleSelect()">
                 <option value="EMPLOYEE">Employee</option>
                 <option value="PM">Project Manager</option>
             </select>
-            <select id="employee-employeeRole" style="display:none;">
+            <select id="employee-employeeRole" class="employee-role-select">
                 <option value="JUNIOR_DEVELOPER">Junior Developer</option>
                 <option value="SENIOR_DEVELOPER">Senior Developer</option>
                 <option value="JUNIOR_ANALYST">Junior Analyst</option>
                 <option value="SENIOR_ANALYST">Senior Analyst</option>
                 <option value="TECH_LEAD">Tech Lead</option>
             </select>
-            <input type="text" id="employee-username" placeholder="Username" required>
+            <input type="text" id="employee-username" placeholder="Username">
+
             <button class="btn" onclick="saveEmployee()">Salva</button>
             <button class="btn" onclick="hideEmployeeForm()">Annulla</button>
         </div>
     </section>
+
 </section>
 
 <script src="main.js"></script>
-<script>
-    // ================= POPOLA SELECT DINAMICHE TASK =================
-    async function populateTaskDropdowns() {
-        if (!isPM()) return;
-
-        // Progetti
-        const projects = await authFetch(`${API_URL}/getAllProjects`).then(res => res.json());
-        const projectSelect = document.getElementById("task-project");
-        projectSelect.innerHTML = projects.map(p => `<option value="${p.id}">${p.name}</option>`).join("");
-
-        // Dipendenti
-        const employees = await authFetch(`${API_URL}/getAllEmployees`).then(res => res.json());
-        const employeeSelect = document.getElementById("task-employee");
-        employeeSelect.innerHTML = employees.map(e => `<option value="${e.id}">${e.name}</option>`).join("");
-    }
-
-    // Aggiorna i dropdown ogni volta che si mostra il form
-    function showTaskForm() {
-        document.getElementById("task-form").style.display = "block";
-        populateTaskDropdowns();
-    }
-    function hideTaskForm() { document.getElementById("task-form").style.display = "none"; }
-</script>
 </body>
 </html>

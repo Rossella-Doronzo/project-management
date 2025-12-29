@@ -27,7 +27,6 @@ function loginUser() {
     })
     .then(data => {
         localStorage.setItem("auth-token", data.token);
-
         const payload = parseJwt(data.token);
         localStorage.setItem("auth-role", payload.role);
         localStorage.setItem("auth-username", payload.sub);
@@ -48,12 +47,14 @@ function loginUser() {
 // ====================== REGISTER ======================
 function toggleEmployeeRoleSelect() {
     const role = document.getElementById("register-role").value;
-    document.getElementById("register-employeeRole").style.display = role === "EMPLOYEE" ? "block" : "none";
+    document.getElementById("register-employeeRole").style.display =
+        role === "EMPLOYEE" ? "block" : "none";
 }
 
 function toggleEmployeeFormRoleSelect() {
     const role = document.getElementById("employee-role").value;
-    document.getElementById("employee-employeeRole").style.display = role === "EMPLOYEE" ? "block" : "none";
+    document.getElementById("employee-employeeRole").style.display =
+        role === "EMPLOYEE" ? "block" : "none";
 }
 
 function registerUser() {
@@ -126,10 +127,11 @@ function setupUIByRole() {
         if (navEmployees) navEmployees.style.display = "none";
     }
 
-    ["project-actions-header", "task-actions-header", "employee-actions-header"].forEach(id => {
-        const el = document.getElementById(id);
-        if (el) el.style.display = pm ? "table-cell" : "none";
-    });
+    ["project-actions-header", "task-actions-header", "employee-actions-header"]
+        .forEach(id => {
+            const el = document.getElementById(id);
+            if (el) el.style.display = pm ? "table-cell" : "none";
+        });
 }
 
 // ====================== PROJECTS ======================
@@ -147,15 +149,16 @@ function fetchProjects() {
             projects.forEach(p => {
                 table.innerHTML += `
                 <tr>
+                    <td>${p.id}</td>
                     <td>${p.name}</td>
                     <td>${p.description}</td>
                     <td>${p.status}</td>
                     <td>${p.endDate}</td>
                     ${isPM() ? `
                     <td>
-                        <button onclick="editProject(${p.id})">Modifica</button>
-                        <button onclick="deleteProject(${p.id})">Elimina</button>
-                    </td>` : "" }
+                        <button class="btn" onclick="editProject(${p.id})">Modifica</button>
+                        <button class="btn" onclick="deleteProject(${p.id})">Elimina</button>
+                    </td>` : ""}
                 </tr>`;
             });
         });
@@ -211,23 +214,68 @@ function fetchTasks() {
         .then(tasks => {
             const table = document.getElementById("task-list");
             table.innerHTML = "";
+
             tasks.forEach(t => {
+                let statusContent = t.status;
+
+                if (!isPM() && t.employee && t.employee.id == userId) {
+                    statusContent = `
+                        <select class="status-select" data-task-id="${t.id}">
+                            <option value="TO_DO" ${t.status === 'TO_DO' ? 'selected' : ''}>To Do</option>
+                            <option value="IN_PROGRESS" ${t.status === 'IN_PROGRESS' ? 'selected' : ''}>In Progress</option>
+                            <option value="COMPLETED" ${t.status === 'COMPLETED' ? 'selected' : ''}>Completed</option>
+                        </select>
+                    `;
+                }
+
                 table.innerHTML += `
                 <tr>
                     <td>${t.title}</td>
                     <td>${t.description}</td>
-                    <td>${t.status}</td>
+                    <td>${statusContent}</td>
                     <td>${t.dueDate}</td>
                     <td>${t.project ? t.project.id : ""}</td>
                     <td>${t.employee ? t.employee.id : ""}</td>
                     ${isPM() ? `
                     <td>
-                        <button onclick="editTask(${t.id})">Modifica</button>
-                        <button onclick="deleteTask(${t.id})">Elimina</button>
-                    </td>` : "" }
+                        <button class="btn" onclick="editTask(${t.id})">Modifica</button>
+                        <button class="btn" onclick="deleteTask(${t.id})">Elimina</button>
+                    </td>` : ""}
                 </tr>`;
             });
+
+            // Pulsante "Salva tutto" per employee con classe btn
+            const container = document.getElementById("task-save-container");
+            if (!isPM()) {
+                container.innerHTML = `<button id="save-all-tasks" class="btn">Salva</button>`;
+                document.getElementById("save-all-tasks").onclick = saveAllTasks;
+            } else {
+                container.innerHTML = "";
+            }
         });
+}
+
+function saveAllTasks() {
+    const selects = document.querySelectorAll(".status-select");
+    selects.forEach(sel => {
+        const taskId = sel.dataset.taskId;
+        const newStatus = sel.value;
+        updateTaskStatus(taskId, newStatus);
+    });
+}
+
+function updateTaskStatus(taskId, newStatus) {
+    const taskUpdate = { id: taskId, status: newStatus };
+
+    authFetch(`${API_URL}/updateTask`, {
+        method: "PUT",
+        body: JSON.stringify(taskUpdate)
+    })
+    .then(res => {
+        if (!res.ok) throw new Error("Errore aggiornamento status");
+        fetchTasks();
+    })
+    .catch(err => alert(err.message));
 }
 
 function saveTask() {
@@ -275,7 +323,7 @@ function hideTaskForm() { document.getElementById("task-form").style.display = "
 function fetchEmployees() {
     if (!isPM()) return;
 
-    const pmId = localStorage.getItem("auth-id"); // filtro PM loggato
+    const pmId = localStorage.getItem("auth-id");
 
     authFetch(`${API_URL}/getAllEmployees`)
         .then(res => res.json())
@@ -284,25 +332,24 @@ function fetchEmployees() {
             table.innerHTML = "";
 
             employees
-                .filter(e => e.id != pmId) // escludo PM loggato
+                .filter(e => e.id != pmId)
                 .forEach(e => {
                     let technicalRole = e.role === "PM" ? "PM" : (e.roleEmployee || "–");
 
                     table.innerHTML += `
                     <tr>
-                        <td>${e.id || "–"}</td> <!-- ID dipendente -->
+                        <td>${e.id || "–"}</td>
                         <td>${e.name || "–"}</td>
+                        <td>${e.username || "–"}</td>
                         <td>${e.role || "–"}</td>
                         <td>${technicalRole}</td>
-                        <td>${e.username || "–"}</td>
                         <td>
-                            <button onclick="editEmployee(${e.id})">Modifica</button>
-                            <button onclick="deleteEmployee(${e.id})">Elimina</button>
+                            <button class="btn" onclick="editEmployee(${e.id})">Modifica</button>
+                            <button class="btn" onclick="deleteEmployee(${e.id})">Elimina</button>
                         </td>
                     </tr>`;
                 });
-        })
-        .catch(err => console.error("Errore nel fetch dipendenti:", err));
+        });
 }
 
 function showEmployeeForm() { document.getElementById("employee-form").style.display = "block"; }
@@ -341,21 +388,6 @@ function editEmployee(id) {
 function deleteEmployee(id) {
     authFetch(`${API_URL}/deleteEmployee?id=${id}`, { method: "DELETE" })
         .then(fetchEmployees);
-}
-
-// ====================== PM UPDATE ======================
-function updatePMName(name, username) {
-    const id = localStorage.getItem("auth-id");
-    const payload = { id, name, username };
-
-    authFetch(`${API_URL}/updateEmployee`, {
-        method: "PUT",
-        body: JSON.stringify(payload)
-    })
-    .then(() => {
-        localStorage.setItem("auth-username", username);
-        alert("Dati aggiornati!");
-    });
 }
 
 // ====================== INIT ======================
