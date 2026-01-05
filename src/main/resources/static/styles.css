@@ -1,16 +1,41 @@
-/* ================== IMPOSTAZIONI GENERALI ================== */
+/* ================== GENERALE ================== */
 body {
     min-height: 100vh;
-    background-color: #f9f9f9;
     margin: 0;
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
     color: #333;
     line-height: 1.6;
+    background-color: #f9f9f9;
 }
 
-/* ================== DASHBOARD LAYOUT ================== */
-#dashboard {
+h2 {
+    color: #9c4dcc;
+    margin-bottom: 15px;
+    text-transform: uppercase;
+    font-size: 1.8rem;
+}
+h3 {
+    color: #9c4dcc;
+    margin-bottom: 10px;
+    font-size: 1.4rem;
+}
+
+/* ================== LOGIN CENTRATO ================== */
+#login-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#login-form {
+    background: white;
+    padding: 30px 40px;
+    border-radius: 10px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     width: 100%;
+    max-width: 400px;
+    text-align: center;
 }
 
 /* ================== HEADER ================== */
@@ -19,72 +44,34 @@ header {
     color: white;
     padding: 20px 0;
     text-align: center;
+}
+
+header h1 {
+    margin: 0;
     font-size: 2rem;
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
-header h1 {
-    margin: 0;
-}
-
-/* ================== NAVIGAZIONE ================== */
+/* ================== NAV ================== */
 nav ul {
     list-style: none;
     padding: 0;
-    margin-top: 20px;
+    margin: 20px 0 0;
     text-align: center;
 }
-
 nav ul li {
     display: inline-block;
-    margin: 0 20px;
+    margin: 0 15px;
 }
-
 nav ul li a {
     color: white;
     text-decoration: none;
     font-weight: 600;
-    font-size: 1rem;
-    transition: color 0.3s ease;
+    transition: 0.3s;
 }
-
 nav ul li a:hover {
     color: #f1e3ff;
-}
-
-/* ================== PULSANTI ================== */
-.btn {
-    background-color: #9c4dcc;
-    color: white;
-    padding: 12px 25px;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 1rem;
-    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-    transition: all 0.3s ease;
-    margin-top: 5px;
-}
-
-.btn:hover {
-    background-color: #7a33b1;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.15);
-}
-
-/* ================== SEZIONI ================== */
-section {
-    padding: 30px;
-    background-color: transparent;
-    border: none;
-}
-
-section h2 {
-    font-size: 1.8rem;
-    margin-bottom: 20px;
-    color: #9c4dcc;
-    font-weight: 600;
-    text-transform: uppercase;
 }
 
 /* ================== TABELLE ================== */
@@ -94,15 +81,16 @@ table {
     margin-top: 20px;
     border-radius: 8px;
     overflow: hidden;
+    background: white;
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    table-layout: fixed; /* larghezza colonne uniforme */
 }
 
-table th,
-table td {
-    padding: 12px 15px;
-    text-align: left;
+table th, table td {
+    padding: 12px 10px;
     border: 1px solid #ddd;
-    font-size: 1rem;
+    text-align: center;
+    word-wrap: break-word;
 }
 
 table th {
@@ -111,121 +99,103 @@ table th {
     text-transform: uppercase;
 }
 
+/* Riga alternata e hover */
 table tr:nth-child(even) {
     background-color: #f4f4f4;
 }
-
 table tr:hover {
     background-color: #f1e3ff;
 }
 
-table td button {
-    margin-right: 8px;
-    padding: 8px 14px;
-    font-size: 0.9rem;
-    border-radius: 5px;
-    border: none;
-    cursor: pointer;
+/* ================== COLONNA AZIONI ================== */
+table th:last-child {
     background-color: #9c4dcc;
     color: white;
 }
 
-table td button:hover {
+table td:last-child {
+    background-color: #f9f9f9;
+    padding: 6px 0;
+}
+
+table td:last-child .btn {
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    margin: 2px;
+    width: auto;
+    display: inline-block;
+}
+
+/* Colori pulsanti azioni */
+table td:last-child .btn.edit-btn {
+    background-color: #3498db;
+}
+table td:last-child .btn.edit-btn:hover {
+    background-color: #2980b9;
+}
+
+table td:last-child .btn.delete-btn {
+    background-color: #e74c3c;
+}
+table td:last-child .btn.delete-btn:hover {
+    background-color: #c0392b;
+}
+
+/* ================== PULSANTI GENERALI ================== */
+.btn {
+    background-color: #9c4dcc;
+    color: white;
+    padding: 12px 25px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    margin-top: 5px;
+    transition: 0.3s;
+}
+.btn:hover {
     background-color: #7a33b1;
 }
 
-/* ================== FOOTER TABELLA (PULSANTI) ================== */
-.table-footer {
-    display: flex;
-    justify-content: flex-end;
-    margin-top: 10px;
+.cancel-btn {
+    background-color: #ccc;
+    color: #333;
+}
+.cancel-btn:hover {
+    background-color: #999;
 }
 
-/* ================== FORM ================== */
-input[type="text"],
-input[type="date"],
-input[type="number"],
-input[type="password"],
-select {
+/* ================== FORMS ================== */
+.form-container {
+    background: white;
+    padding: 20px 30px;
+    border-radius: 10px;
+    margin-top: 20px;
+    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+    text-align: center;
+}
+input, select {
     width: 100%;
-    padding: 12px;
+    padding: 10px;
     margin: 10px 0;
-    border: 1px solid #ccc;
-    border-radius: 5px;
     font-size: 1rem;
+    border-radius: 5px;
+    border: 1px solid #ccc;
     box-sizing: border-box;
 }
-
-input:focus,
-select:focus {
+input:focus, select:focus {
     border-color: #9c4dcc;
     outline: none;
 }
 
-h3 {
-    color: #9c4dcc;
-    margin-bottom: 10px;
-    font-size: 1.4rem;
-}
+/* ================== VISIBILITÀ RUOLI ================== */
+.pm-only { display: none; }
+.employee-role-select { display: none; }
 
-/* ================== LOGIN & REGISTER - CAMPI PIÙ PICCOLI E CENTRATI ================== */
-#login-section input,
-#register-section input,
-#register-section select {
-    width: 250px;
-    padding: 8px 10px;
-    margin: 8px auto;
-    display: block;
-    font-size: 0.95rem;
-    box-sizing: border-box;
-}
-
-#login-section .btn,
-#register-section .btn {
-    padding: 8px 20px;
-    font-size: 0.95rem;
-    display: block;
-    margin: 10px auto;
-}
-
-/* ================== BOX FORM ================== */
-#project-form,
-#task-form,
-#employee-form,
-#register-section,
-#login-section {
-    background-color: #fff;
-    padding: 20px 40px;
-    border-radius: 10px;
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1);
-    margin-top: 20px;
-    text-align: center;
-}
-
-/* ================== PULSANTI ANNULLA ================== */
-#project-form .btn:last-child,
-#task-form .btn:last-child,
-#employee-form .btn:last-child,
-#register-section .btn:last-child {
-    background-color: #ccc;
-    color: #333;
-}
-
-#project-form .btn:last-child:hover,
-#task-form .btn:last-child:hover,
-#employee-form .btn:last-child:hover,
-#register-section .btn:last-child:hover {
-    background-color: #999;
-}
-
-/* ================== ALERT ================== */
-.alert {
-    padding: 12px 20px;
-    margin-bottom: 15px;
-    border-radius: 5px;
-    background-color: #f9c0c0;
-    color: #900;
-    font-weight: 600;
+/* ================== FOOTER TABELLE ================== */
+.table-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
 }
 
 /* ================== RESPONSIVE ================== */
@@ -234,39 +204,15 @@ h3 {
         display: block;
         margin: 8px 0;
     }
-
-    section {
-        padding: 20px;
-    }
-
     table {
         font-size: 0.9rem;
     }
-
+    input, select {
+        font-size: 0.9rem;
+        padding: 8px;
+    }
     .btn {
         padding: 8px 16px;
-    }
-
-    #login-section input,
-    #register-section input,
-    #register-section select {
-        width: 200px;
-        padding: 6px;
         font-size: 0.9rem;
     }
-
-    #login-section .btn,
-    #register-section .btn {
-        padding: 6px 16px;
-        font-size: 0.9rem;
-    }
-}
-
-/* ================== RUOLI ================== */
-.pm-only {
-    display: inline-block;
-}
-
-.employee-role-select {
-    display: none;
 }
