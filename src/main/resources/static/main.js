@@ -107,6 +107,7 @@ async function fetchProjects() {
                     <td>${p.name}</td>
                     <td>${p.description}</td>
                     <td>${p.status}</td>
+                    <td>${p.startDate || ""}</td>
                     <td>${p.endDate || ""}</td>
                     <td>${isPM() ? `
                         <button class="btn" onclick="editProject(${p.id})">Modifica</button>
@@ -127,12 +128,14 @@ function showProjectForm(project = null) {
     const idInput = document.getElementById("project-id");
     const nameInput = document.getElementById("project-name");
     const descInput = document.getElementById("project-description");
+    const startDateInput = document.getElementById("project-startDate");
     const endDateInput = document.getElementById("project-endDate");
     const statusInput = document.getElementById("project-status");
 
     if (idInput) idInput.value = project?.id || "";
     if (nameInput) nameInput.value = project?.name || "";
     if (descInput) descInput.value = project?.description || "";
+    if (startDateInput) startDateInput.value = project?.startDate || "";
     if (endDateInput) endDateInput.value = project?.endDate || "";
     if (statusInput) statusInput.value = project?.status || "IN_PROGRESS";
 }
@@ -151,6 +154,7 @@ async function saveProject() {
             id: id ? parseInt(id) : null,
             name: document.getElementById("project-name")?.value,
             description: document.getElementById("project-description")?.value,
+            startDate: document.getElementById("project-startDate")?.value || "",
             endDate: document.getElementById("project-endDate")?.value || "",
             status: document.getElementById("project-status")?.value || "IN_PROGRESS"
         };
