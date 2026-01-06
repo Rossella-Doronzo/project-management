@@ -14,6 +14,7 @@ h2 {
     text-transform: uppercase;
     font-size: 1.8rem;
 }
+
 h3 {
     color: #9c4dcc;
     margin-bottom: 10px;
@@ -60,16 +61,19 @@ nav ul {
     margin: 20px 0 0;
     text-align: center;
 }
+
 nav ul li {
     display: inline-block;
     margin: 0 15px;
 }
+
 nav ul li a {
     color: white;
     text-decoration: none;
     font-weight: 600;
     transition: 0.3s;
 }
+
 nav ul li a:hover {
     color: #f1e3ff;
 }
@@ -103,16 +107,19 @@ table th {
 table tr:nth-child(even) {
     background-color: #f4f4f4;
 }
+
 table tr:hover {
     background-color: #f1e3ff;
 }
 
 /* ================== COLONNA AZIONI ================== */
+/* Intestazione sempre viola */
 table th:last-child {
     background-color: #9c4dcc;
     color: white;
 }
 
+/* Celle azioni */
 table td:last-child {
     background-color: #f9f9f9;
     padding: 6px 0;
@@ -130,6 +137,7 @@ table td:last-child .btn {
 table td:last-child .btn.edit-btn {
     background-color: #3498db;
 }
+
 table td:last-child .btn.edit-btn:hover {
     background-color: #2980b9;
 }
@@ -137,6 +145,7 @@ table td:last-child .btn.edit-btn:hover {
 table td:last-child .btn.delete-btn {
     background-color: #e74c3c;
 }
+
 table td:last-child .btn.delete-btn:hover {
     background-color: #c0392b;
 }
@@ -152,6 +161,7 @@ table td:last-child .btn.delete-btn:hover {
     margin-top: 5px;
     transition: 0.3s;
 }
+
 .btn:hover {
     background-color: #7a33b1;
 }
@@ -160,6 +170,7 @@ table td:last-child .btn.delete-btn:hover {
     background-color: #ccc;
     color: #333;
 }
+
 .cancel-btn:hover {
     background-color: #999;
 }
@@ -173,6 +184,7 @@ table td:last-child .btn.delete-btn:hover {
     box-shadow: 0 6px 12px rgba(0,0,0,0.1);
     text-align: center;
 }
+
 input, select {
     width: 100%;
     padding: 10px;
@@ -182,14 +194,22 @@ input, select {
     border: 1px solid #ccc;
     box-sizing: border-box;
 }
+
 input:focus, select:focus {
     border-color: #9c4dcc;
     outline: none;
 }
 
 /* ================== VISIBILITÀ RUOLI ================== */
-.pm-only { display: none; }
-.employee-role-select { display: none; }
+/* PM only: visibile solo a PM */
+.pm-only {
+    display: none;
+}
+
+/* Selezione ruolo tecnico */
+.employee-role-select {
+    display: none;
+}
 
 /* ================== FOOTER TABELLE ================== */
 .table-footer {

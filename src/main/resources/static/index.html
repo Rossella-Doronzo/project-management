@@ -45,7 +45,7 @@
                 <th>Descrizione</th>
                 <th>Status</th>
                 <th>Data di Fine</th>
-                <th class="pm-only">Azioni</th>
+                <th>Azioni</th> <!-- pm-only rimosso -->
             </tr>
             </thead>
             <tbody id="project-list"></tbody>
@@ -81,7 +81,7 @@
                 <th>Data di Scadenza</th>
                 <th>Progetto</th>
                 <th>Dipendente</th>
-                <th class="pm-only">Azioni</th>
+                <th>Azioni</th> <!-- pm-only rimosso -->
             </tr>
             </thead>
             <tbody id="task-list"></tbody>
@@ -89,26 +89,30 @@
 
         <div class="table-footer">
             <button class="btn pm-only" id="add-task-btn" onclick="showTaskForm()">Aggiungi Task</button>
-            <div id="task-save-container"></div>
         </div>
 
         <div id="task-form" class="form-container" style="display:none;">
             <h3>Modifica/Aggiungi Task</h3>
             <input type="hidden" id="task-id">
-            <input type="text" id="task-title" placeholder="Titolo Task" required>
-            <input type="text" id="task-description" placeholder="Descrizione" required>
-            <input type="date" id="task-dueDate" required>
-            <select id="task-status">
-                <option value="TO_DO">To Do</option>
-                <option value="IN_PROGRESS">In Progress</option>
-                <option value="COMPLETED">Completed</option>
-            </select>
+
+            <!-- Campi solo lettura per employee -->
+            <input type="text" id="task-title" placeholder="Titolo Task" required readonly>
+            <input type="text" id="task-description" placeholder="Descrizione" required readonly>
+            <input type="date" id="task-dueDate" required readonly>
             <select id="task-project">
                 <option value="">-- Seleziona progetto --</option>
             </select>
             <select id="task-employee">
                 <option value="">-- Seleziona dipendente --</option>
             </select>
+
+            <!-- Campo status sempre modificabile -->
+            <select id="task-status">
+                <option value="TO_DO">To Do</option>
+                <option value="IN_PROGRESS">In Progress</option>
+                <option value="COMPLETED">Completed</option>
+            </select>
+
             <button class="btn" onclick="saveTask()">Salva</button>
             <button class="btn cancel-btn" onclick="hideTaskForm()">Annulla</button>
         </div>

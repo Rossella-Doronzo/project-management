@@ -314,12 +314,16 @@ async function fetchTasks() {
 
         tasks.forEach(t => {
             let statusContent = t.status;
+
             if (!isPM() && t.employee?.id == userId) {
-                statusContent = `<select class="status-select" data-task-id="${t.id}">
-                    <option value="TO_DO" ${t.status === 'TO_DO' ? 'selected' : ''}>To Do</option>
-                    <option value="IN_PROGRESS" ${t.status === 'IN_PROGRESS' ? 'selected' : ''}>In Progress</option>
-                    <option value="COMPLETED" ${t.status === 'COMPLETED' ? 'selected' : ''}>Completed</option>
-                </select>`;
+                statusContent = `
+                    <select id="status-${t.id}">
+                        <option value="TO_DO" ${t.status === 'TO_DO' ? 'selected' : ''}>To Do</option>
+                        <option value="IN_PROGRESS" ${t.status === 'IN_PROGRESS' ? 'selected' : ''}>In Progress</option>
+                        <option value="COMPLETED" ${t.status === 'COMPLETED' ? 'selected' : ''}>Completed</option>
+                    </select>
+                    <button class="btn" onclick="saveTaskStatus(${t.id})">Salva</button>
+                `;
             }
 
             table.innerHTML += `
@@ -330,8 +334,12 @@ async function fetchTasks() {
                     <td>${t.dueDate || ""}</td>
                     <td>${t.project?.id || ""}</td>
                     <td>${t.employee?.id || ""}</td>
-                    <td>${isPM() ? `<button class="btn" onclick="editTask(${t.id})">Modifica</button>
-                                     <button class="btn" onclick="deleteTask(${t.id})">Elimina</button>` : ""}</td>
+                    <td>
+                        ${isPM() ? `
+                            <button class="btn" onclick="editTask(${t.id})">Modifica</button>
+                            <button class="btn" onclick="deleteTask(${t.id})">Elimina</button>
+                        ` : ""}
+                    </td>
                 </tr>`;
         });
     } catch(err) {
@@ -339,8 +347,8 @@ async function fetchTasks() {
     }
 }
 
+
 function showTaskForm(task = null) {
-    if (!isPM()) return;
     const form = document.getElementById("task-form");
     if (!form) return;
     form.style.display = "block";
@@ -353,6 +361,7 @@ function showTaskForm(task = null) {
     const projectSelect = document.getElementById("task-project");
     const employeeSelect = document.getElementById("task-employee");
 
+    // Riempio i campi comuni
     if (idInput) idInput.value = task?.id || "";
     if (titleInput) titleInput.value = task?.title || "";
     if (descInput) descInput.value = task?.description || "";
@@ -360,15 +369,60 @@ function showTaskForm(task = null) {
     if (statusInput) statusInput.value = task?.status || "TO_DO";
 
     if (!task) {
-        loadProjectsSelect();
-        loadEmployeesSelect();
-        if (projectSelect) projectSelect.style.display = "inline-block";
-        if (employeeSelect) employeeSelect.style.display = "inline-block";
+        // CREAZIONE NUOVO TASK
+        if (isPM()) {
+            // Carica i progetti e i dipendenti solo se PM
+            loadProjectsSelect();
+            loadEmployeesSelect();
+
+            // Mostra le dropdown per i progetti e i dipendenti
+            if (projectSelect) projectSelect.style.display = "inline-block";
+            if (employeeSelect) employeeSelect.style.display = "inline-block";
+
+            projectSelect.disabled = false;
+            employeeSelect.disabled = false;
+
+            // PM può modificare tutti i campi
+            titleInput.readOnly = false;  // PM può modificare il titolo
+            descInput.readOnly = false;   // PM può modificare la descrizione
+            dueInput.readOnly = false;    // PM può modificare la data
+            statusInput.disabled = false;  // PM può modificare lo status
+        } else {
+            // Employee non può creare task
+            form.style.display = "none";
+        }
     } else {
-        if (projectSelect) projectSelect.style.display = "none";
-        if (employeeSelect) employeeSelect.style.display = "none";
+        // MODIFICA TASK
+        if (isPM()) {
+            if (projectSelect) projectSelect.style.display = "none";
+            if (employeeSelect) employeeSelect.style.display = "none";
+
+            projectSelect.disabled = true;
+            employeeSelect.disabled = true;
+
+            projectSelect.innerHTML = "";
+             employeeSelect.innerHTML = "";
+
+            // PM: può modificare titolo, descrizione, data, status
+            titleInput.readOnly = false;   // PM può modificare il titolo
+            descInput.readOnly = false;    // PM può modificare la descrizione
+            dueInput.readOnly = false;     // PM può modificare la data
+            statusInput.disabled = false;  // PM può modificare lo status
+        } else {
+            // Employee: può modificare solo lo status
+            if (projectSelect) projectSelect.style.display = "none";
+            if (employeeSelect) employeeSelect.style.display = "none";
+
+            // Employee non può modificare titolo, descrizione, data
+            titleInput.readOnly = true;    // Employee non può modificare il titolo
+            descInput.readOnly = true;     // Employee non può modificare la descrizione
+            dueInput.readOnly = true;      // Employee non può modificare la data
+            statusInput.disabled = false;  // Employee può modificare solo lo status
+        }
     }
 }
+
+
 
 function hideTaskForm() {
     const form = document.getElementById("task-form");
@@ -381,7 +435,9 @@ async function saveTask() {
         const id = idInput?.value;
 
         let task;
+
         if (!id) {
+            // CREAZIONE TASK NUOVO
             const projectId = document.getElementById("task-project")?.value;
             const employeeId = document.getElementById("task-employee")?.value;
 
@@ -394,13 +450,28 @@ async function saveTask() {
                 employee: employeeId ? { id: parseInt(employeeId) } : null
             };
         } else {
-            task = {
-                id: parseInt(id),
-                title: document.getElementById("task-title")?.value,
-                description: document.getElementById("task-description")?.value,
-                dueDate: document.getElementById("task-dueDate")?.value || "",
-                status: document.getElementById("task-status")?.value || "TO_DO"
-            };
+            // MODIFICA TASK
+            const title = document.getElementById("task-title")?.value;
+            const desc = document.getElementById("task-description")?.value;
+            const due = document.getElementById("task-dueDate")?.value || "";
+            const status = document.getElementById("task-status")?.value || "TO_DO";
+
+            if (isPM()) {
+                // PM modifica titolo, descrizione, data, status
+                task = {
+                    id: parseInt(id),
+                    title,
+                    description: desc,
+                    dueDate: due,
+                    status
+                };
+            } else {
+                // Employee modifica solo lo status
+                task = {
+                    id: parseInt(id),
+                    status
+                };
+            }
         }
 
         const res = await authFetch(`${API_URL}/${id ? "updateTask" : "createTask"}`, {
@@ -474,6 +545,28 @@ async function loadEmployeesSelect(selectedId = null) {
         alert("Errore caricamento dipendenti per task: " + err.message);
     }
 }
+
+async function saveTaskStatus(taskId) {
+    try {
+        const statusSelect = document.getElementById(`status-${taskId}`);
+        const newStatus = statusSelect.value;
+
+        const res = await authFetch(`${API_URL}/updateTask`, {
+            method: "PUT",
+            body: JSON.stringify({
+                id: taskId,
+                status: newStatus
+            })
+        });
+
+        if (!res.ok) throw new Error("Errore nel salvataggio dello stato");
+
+        fetchTasks(); // aggiorna la tabella
+    } catch (err) {
+        alert(err.message);
+    }
+}
+
 
 // ====================== INIT ======================
 document.addEventListener("DOMContentLoaded", () => {
