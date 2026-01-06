@@ -203,7 +203,8 @@ async function fetchEmployees() {
         if (!table) return;
         table.innerHTML = "";
 
-        employees.forEach(e => {
+        const filtered = employees.filter(e => e.role !== "PM");
+        filtered.forEach(e => {
             table.innerHTML += `
                 <tr>
                     <td>${e.id}</td>
@@ -326,7 +327,6 @@ async function fetchTasks() {
                         <option value="IN_PROGRESS" ${t.status === 'IN_PROGRESS' ? 'selected' : ''}>In Progress</option>
                         <option value="COMPLETED" ${t.status === 'COMPLETED' ? 'selected' : ''}>Completed</option>
                     </select>
-                    <button class="btn" onclick="saveTaskStatus(${t.id})">Salva</button>
                 `;
             }
 
@@ -339,10 +339,15 @@ async function fetchTasks() {
                     <td>${t.project?.id || ""}</td>
                     <td>${t.employee?.id || ""}</td>
                     <td>
-                        ${isPM() ? `
-                            <button class="btn" onclick="editTask(${t.id})">Modifica</button>
-                            <button class="btn" onclick="deleteTask(${t.id})">Elimina</button>
-                        ` : ""}
+                        ${isPM()
+                            ? `
+                                <button class="btn" onclick="editTask(${t.id})">Modifica</button>
+                                <button class="btn" onclick="deleteTask(${t.id})">Elimina</button>
+                            `
+                            : `
+                                <button class="btn" onclick="saveTaskStatus(${t.id})">Salva</button>
+                            `
+                        }
                     </td>
                 </tr>`;
         });
