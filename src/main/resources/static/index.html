@@ -15,6 +15,43 @@
         <input type="text" id="login-username" placeholder="Username" required>
         <input type="password" id="login-password" placeholder="Password" required>
         <button class="btn" type="button" id="login-btn">Login</button>
+        <p class="switch-auth">
+            Non sei registrato?
+            <a href="#" onclick="showRegister()">Registrati</a>
+        </p>
+
+    </form>
+</section>
+
+<!-- ================= REGISTER ================= -->
+<section id="register-section" style="display:none;">
+    <form id="register-form">
+        <h2>Registrazione</h2>
+
+        <input type="text" id="register-name" placeholder="Nome" required>
+        <input type="text" id="register-username" placeholder="Username" required>
+        <input type="password" id="register-password" placeholder="Password" required>
+
+        <select id="register-role">
+            <option value="EMPLOYEE">Employee</option>
+            <option value="PM">Project Manager</option>
+        </select>
+
+        <select id="register-employeeRole" style="display:block;">
+            <option value="JUNIOR_DEVELOPER">Junior Developer</option>
+            <option value="SENIOR_DEVELOPER">Senior Developer</option>
+            <option value="JUNIOR_ANALYST">Junior Analyst</option>
+            <option value="SENIOR_ANALYST">Senior Analyst</option>
+            <option value="TECH_LEAD">Tech Lead</option>
+        </select>
+
+        <button class="btn" type="button" id="register-btn">
+            Registrati
+        </button>
+        <p class="switch-auth">
+            Hai già un account?
+            <a href="#" onclick="showLogin()">Torna al login</a>
+        </p>
     </form>
 </section>
 

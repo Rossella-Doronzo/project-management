@@ -66,6 +66,58 @@ function logoutUser(e) {
     toggleDashboard(false);
 }
 
+// ====================== REGISTER ======================
+function toggleRegisterEmployeeRoleSelect() {
+    const role = document.getElementById("register-role")?.value;
+    const employeeRoleSelect = document.getElementById("register-employeeRole");
+    if (!employeeRoleSelect) return;
+
+    employeeRoleSelect.style.display = role === "EMPLOYEE" ? "block" : "none";
+}
+
+async function registerUser(e) {
+    if (e) e.preventDefault();
+
+    const name = document.getElementById("register-name")?.value;
+    const username = document.getElementById("register-username")?.value;
+    const password = document.getElementById("register-password")?.value;
+    const role = document.getElementById("register-role")?.value || "EMPLOYEE";
+    const roleEmployee = document.getElementById("register-employeeRole")?.value || "JUNIOR_DEVELOPER";
+
+    if (!name || !username || !password) {
+        alert("Compila tutti i campi");
+        return;
+    }
+
+    const employee = {
+        name,
+        username,
+        password,
+        role,
+        roleEmployee: role === "EMPLOYEE" ? roleEmployee : null
+    };
+
+    try {
+        const res = await fetch(`${API_URL}/auth/register`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(employee)
+        });
+
+        if (!res.ok) {
+            const msg = await res.text();
+            throw new Error(msg || "Errore registrazione");
+        }
+
+        alert("Registrazione completata. Ora puoi effettuare il login.");
+        showLogin();
+    } catch (err) {
+        alert(err.message);
+    }
+}
+
 // ====================== DASHBOARD TOGGLE ======================
 function toggleDashboard(show) {
     const loginSection = document.getElementById("login-section");
@@ -575,6 +627,15 @@ async function saveTaskStatus(taskId) {
         alert(err.message);
     }
 }
+function showRegister() {
+    document.getElementById("login-section").style.display = "none";
+    document.getElementById("register-section").style.display = "block";
+}
+
+function showLogin() {
+    document.getElementById("register-section").style.display = "none";
+    document.getElementById("login-section").style.display = "block";
+}
 
 
 // ====================== INIT ======================
@@ -585,6 +646,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
     const logoutBtn = document.getElementById("logout-btn");
     if (logoutBtn) logoutBtn.addEventListener("click", logoutUser);
+
+const registerBtn = document.getElementById("register-btn");
+    if (registerBtn) registerBtn.addEventListener("click", registerUser);
+
+    const registerRoleSelect = document.getElementById("register-role");
+    if (registerRoleSelect) {
+        registerRoleSelect.addEventListener("change", toggleRegisterEmployeeRoleSelect);
+    }
 
     // Toggle role per employee form
     const roleSelect = document.getElementById("employee-role");
